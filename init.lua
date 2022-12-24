@@ -10,8 +10,8 @@ cycle = {}
 cycle.version = 1
 
 local err = {}
-function err.unreg()
-	error("Please only call cycle functions after the registrations of the items!")
+function err.unreg(v)
+	error("Please only call cycle functions after the registrations of the items!" .. v)
 end
 
 --## cycle.node APIs ##--
@@ -26,11 +26,11 @@ function cycle.node.punchcycle(list)
 
 		local nodedef = minetest.registered_nodes[v]
 		if not nodedef then
-			err.unreg()
+			err.unreg(v)
 		end
 
 		local old_on_punch = nodedef.on_punch
-		local function new_on_punch = function(pos, node, puncher, pointed_thing)
+		local new_on_punch = function(pos, node, puncher, pointed_thing)
 			node.name = list[n]
 			minetest.swap_node(pos,node)
 			if old_on_punch then
@@ -50,11 +50,11 @@ function cycle.node.rightclickcycle(list)
 
 		local nodedef = minetest.registered_nodes[v]
 		if not nodedef then
-			err.unreg()
+			err.unreg(v)
 		end
 
 		local old_on_rightclick = nodedef.on_rightclick
-		local function new_on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+		local new_on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
 			node.name = list[n]
 			minetest.swap_node(pos,node)
 			if old_on_rightclick then
@@ -77,11 +77,11 @@ function cycle.item.placecycle(list)
 
 		local itemdef = minetest.registered_items[v]
 		if not itemdef then
-			err.unreg()
+			err.unreg(v)
 		end
 
 		local old_on_place = itemdef.on_place
-		local function new_on_place = function(itemstack, placer, pointed_thing)
+		local new_on_place = function(itemstack, placer, pointed_thing)
 			itemstack:set_name(list[n])
 			if old_on_place then
 				return old_on_place(itemstack, placer, pointed_thing)
@@ -101,11 +101,11 @@ function cycle.item.secondarycycle(list)
 
 		local itemdef = minetest.registered_items[v]
 		if not itemdef then
-			err.unreg()
+			err.unreg(v)
 		end
 
 		local old_on_secondary_use = itemdef.on_secondary_use
-		local function new_on_secondary_use = function(itemstack, user, pointed_thing)
+		local new_on_secondary_use = function(itemstack, user, pointed_thing)
 			itemstack:set_name(list[n])
 			if old_on_secondary_use then
 				return old_on_place(itemstack, user, pointed_thing)
@@ -125,11 +125,11 @@ function cycle.item.usecycle(list)
 
 		local itemdef = minetest.registered_items[v]
 		if not itemdef then
-			err.unreg()
+			err.unreg(v)
 		end
 
 		local old_on_place = itemdef.on_place
-		local function new_on_place = function(itemstack, placer, pointed_thing)
+		local new_on_place = function(itemstack, placer, pointed_thing)
 			itemstack:set_name(list[n])
 			if old_on_place then
 				return old_on_place(itemstack, placer, pointed_thing)
@@ -138,7 +138,7 @@ function cycle.item.usecycle(list)
 		end
 
 		local old_on_secondary_use = itemdef.on_secondary_use
-		local function new_on_secondary_use = function(itemstack, user, pointed_thing)
+		local new_on_secondary_use = function(itemstack, user, pointed_thing)
 			itemstack:set_name(list[n])
 			if old_on_secondary_use then
 				return old_on_place(itemstack, user, pointed_thing)
